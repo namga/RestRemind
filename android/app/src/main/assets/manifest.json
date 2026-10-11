@@ -1,0 +1,43 @@
+{
+  "id": "/",
+  "name": "Nhắc Uống Nước · Vận Động · Nghỉ Ngơi",
+  "short_name": "Nhắc Nhở",
+  "description": "Ứng dụng nhắc uống nước, vận động và nghỉ ngơi. Tùy chỉnh giao diện, hình nền và phát nhạc thư giãn từ máy.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui", "browser"],
+  "background_color": "#e0f2fe",
+  "theme_color": "#0ea5e9",
+  "orientation": "portrait-primary",
+  "lang": "vi",
+  "dir": "ltr",
+  "categories": ["health", "lifestyle", "utilities"],
+  "prefer_related_applications": false,
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

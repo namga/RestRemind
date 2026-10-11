@@ -1,0 +1,1560 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#0ea5e9" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Nhắc Nhở" />
+  <title>Nhắc Uống Nước · Vận Động · Nghỉ Ngơi</title>
+  <link rel="manifest" href="/manifest.json" type="application/manifest+json" />
+  <link rel="apple-touch-icon" href="/icon-192.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png" />
+  <style>
+    :root {
+      --primary: #0ea5e9;
+      --primary-dark: #0369a1;
+      --bg-start: #e0f2fe;
+      --bg-mid: #f0f9ff;
+      --bg-end: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --text-soft: #475569;
+      --border: rgba(14, 165, 233, 0.12);
+      --shadow: rgba(14, 165, 233, 0.08);
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: linear-gradient(160deg, var(--bg-start) 0%, var(--bg-mid) 40%, var(--bg-end) 100%);
+      background-size: cover;
+      background-attachment: fixed;
+      min-height: 100dvh;
+      color: var(--text);
+      padding: 16px;
+      padding-bottom: 40px;
+      transition: background 0.3s;
+    }
+    body.has-bg-image {
+      background-image: var(--bg-image);
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+    body.has-bg-image::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: rgba(255,255,255,0.55);
+      z-index: -1;
+      pointer-events: none;
+    }
+    body.dark {
+      --primary: #38bdf8;
+      --primary-dark: #7dd3fc;
+      --bg-start: #0f172a;
+      --bg-mid: #1e293b;
+      --bg-end: #0f172a;
+      --card-bg: #1e293b;
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --text-soft: #cbd5e1;
+      --border: rgba(56, 189, 248, 0.15);
+      --shadow: rgba(0,0,0,0.3);
+    }
+    body.dark.has-bg-image::before {
+      background: rgba(15, 23, 42, 0.65);
+    }
+    .app {
+      max-width: 420px;
+      margin: 0 auto;
+      position: relative;
+    }
+    header {
+      text-align: center;
+      padding: 16px 0 20px;
+      position: relative;
+    }
+    header h1 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+      letter-spacing: -0.02em;
+    }
+    header p {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+    .btn-settings {
+      position: absolute;
+      right: 0;
+      top: 12px;
+      width: 40px;
+      height: 40px;
+      border: none;
+      border-radius: 12px;
+      background: var(--card-bg);
+      box-shadow: 0 2px 10px var(--shadow);
+      font-size: 1.2rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .card {
+      background: var(--card-bg);
+      border-radius: 18px;
+      padding: 18px;
+      margin-bottom: 14px;
+      box-shadow: 0 4px 18px var(--shadow);
+      border: 1px solid var(--border);
+    }
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .icon {
+      width: 46px;
+      height: 46px;
+      border-radius: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+    .icon.water { background: #e0f2fe; }
+    .icon.exercise { background: #dcfce7; }
+    .icon.rest { background: #fef3c7; }
+    body.dark .icon.water { background: #0c4a6e; }
+    body.dark .icon.exercise { background: #14532d; }
+    body.dark .icon.rest { background: #78350f; }
+    .card-title { font-size: 1.05rem; font-weight: 600; }
+    .card-sub { font-size: 0.78rem; color: var(--text-muted); margin-top: 2px; }
+    .row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+    .row label { font-size: 0.88rem; color: var(--text-soft); flex: 1; }
+    input[type="number"], input[type="color"], select {
+      width: 90px;
+      padding: 9px 10px;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 11px;
+      font-size: 0.92rem;
+      background: #f8fafc;
+      color: var(--text);
+      text-align: center;
+    }
+    body.dark input[type="number"], body.dark select {
+      background: #0f172a;
+      border-color: #334155;
+      color: #f1f5f9;
+    }
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+    input[type="color"] {
+      width: 48px;
+      height: 36px;
+      padding: 2px;
+      cursor: pointer;
+    }
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 6px;
+    }
+    .switch {
+      position: relative;
+      width: 50px;
+      height: 28px;
+    }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      inset: 0;
+      background: #cbd5e1;
+      border-radius: 28px;
+      transition: 0.25s;
+    }
+    .slider:before {
+      content: "";
+      position: absolute;
+      height: 22px;
+      width: 22px;
+      left: 3px;
+      bottom: 3px;
+      background: white;
+      border-radius: 50%;
+      transition: 0.25s;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+    }
+    input:checked + .slider { background: var(--primary); }
+    input:checked + .slider:before { transform: translateX(22px); }
+    .status {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px dashed #e2e8f0;
+      min-height: 1.3em;
+    }
+    body.dark .status { border-color: #334155; }
+    .status.active { color: #059669; font-weight: 500; }
+    body.dark .status.active { color: #34d399; }
+    .btn-group { display: flex; gap: 10px; margin-top: 6px; }
+    button {
+      flex: 1;
+      padding: 13px 14px;
+      border: none;
+      border-radius: 13px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.15s, opacity 0.15s;
+    }
+    button:active { transform: scale(0.97); }
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+      box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
+    }
+    .btn-danger { background: #fee2e2; color: #dc2626; }
+    body.dark .btn-danger { background: #7f1d1d; color: #fca5a5; }
+    .btn-secondary {
+      background: #f1f5f9;
+      color: #475569;
+    }
+    body.dark .btn-secondary { background: #334155; color: #e2e8f0; }
+    .btn-sm {
+      padding: 8px 12px;
+      font-size: 0.82rem;
+      flex: none;
+    }
+    .global-actions { margin-top: 4px; margin-bottom: 14px; }
+    .permission-note {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      text-align: center;
+      margin-top: 10px;
+      line-height: 1.4;
+    }
+    footer {
+      text-align: center;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-top: 8px;
+    }
+    .toast {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: #0f172a;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 14px;
+      font-size: 0.88rem;
+      opacity: 0;
+      transition: all 0.3s ease;
+      z-index: 200;
+      max-width: 90%;
+      text-align: center;
+      pointer-events: none;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* ===== In-app alert (nhắc nhở) ===== */
+    .alert-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.55);
+      z-index: 300;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      visibility: hidden;
+      transition: 0.25s;
+    }
+    .alert-overlay.show {
+      opacity: 1;
+      visibility: visible;
+    }
+    .alert-box {
+      background: var(--card-bg, #fff);
+      border-radius: 22px;
+      padding: 28px 22px 22px;
+      max-width: 360px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+      animation: alertPop 0.35s ease;
+      border: 2px solid var(--primary, #0ea5e9);
+    }
+    @keyframes alertPop {
+      from { transform: scale(0.85); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .alert-emoji {
+      font-size: 3rem;
+      line-height: 1;
+      margin-bottom: 10px;
+      animation: alertPulse 1s ease infinite;
+    }
+    @keyframes alertPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.12); }
+    }
+    .alert-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--text, #0f172a);
+    }
+    .alert-msg {
+      font-size: 0.95rem;
+      color: var(--text-soft, #475569);
+      margin-bottom: 20px;
+      line-height: 1.45;
+    }
+    .alert-box .btn-primary {
+      width: 100%;
+      padding: 14px;
+      font-size: 1.05rem;
+    }
+    .alert-box .btn-secondary {
+      width: 100%;
+      margin-top: 10px;
+      padding: 12px;
+    }
+
+    /* ===== Music player ===== */
+    .music-card .music-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    #btn-play-pause.btn-playing {
+      background: #f59e0b !important;
+      color: #fff !important;
+      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.35);
+    }
+    .music-info {
+      flex: 1;
+      min-width: 0;
+      font-size: 0.85rem;
+      color: var(--text-soft);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .music-info strong {
+      display: block;
+      color: var(--text);
+      font-size: 0.9rem;
+      margin-bottom: 2px;
+    }
+    audio { display: none; }
+    .progress-wrap {
+      width: 100%;
+      margin-top: 10px;
+    }
+    .progress-bar {
+      height: 6px;
+      background: #e2e8f0;
+      border-radius: 4px;
+      overflow: hidden;
+      cursor: pointer;
+    }
+    body.dark .progress-bar { background: #334155; }
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--primary);
+      border-radius: 4px;
+      transition: width 0.15s;
+    }
+    .time-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* ===== Settings panel ===== */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 100;
+      opacity: 0;
+      visibility: hidden;
+      transition: 0.25s;
+    }
+    .overlay.open {
+      opacity: 1;
+      visibility: visible;
+    }
+    .settings-panel {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      max-height: 85dvh;
+      background: var(--card-bg);
+      border-radius: 22px 22px 0 0;
+      z-index: 110;
+      padding: 20px 18px 32px;
+      overflow-y: auto;
+      transform: translateY(100%);
+      transition: transform 0.3s ease;
+      max-width: 480px;
+      margin: 0 auto;
+      box-shadow: 0 -8px 30px rgba(0,0,0,0.15);
+    }
+    .settings-panel.open {
+      transform: translateY(0);
+    }
+    .settings-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
+    .settings-header h2 {
+      font-size: 1.15rem;
+      font-weight: 700;
+    }
+    .btn-close {
+      width: 36px;
+      height: 36px;
+      border: none;
+      border-radius: 10px;
+      background: #f1f5f9;
+      font-size: 1.1rem;
+      cursor: pointer;
+      color: #64748b;
+    }
+    body.dark .btn-close { background: #334155; color: #94a3b8; }
+    .settings-section {
+      margin-bottom: 20px;
+    }
+    .settings-section h3 {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 12px;
+    }
+    .theme-presets {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .preset {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      border: 2.5px solid transparent;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+    .preset.active {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(14,165,233,0.25);
+    }
+    .preset span {
+      position: absolute;
+      bottom: 3px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-size: 0.6rem;
+      color: white;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+    }
+    .color-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .color-row label {
+      font-size: 0.88rem;
+      color: var(--text-soft);
+    }
+    .bg-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+    .file-input-hidden {
+      display: none;
+    }
+    .opacity-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .opacity-row input[type="range"] {
+      flex: 1;
+      accent-color: var(--primary);
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <h1>💧 Nhắc Nhở Sức Khỏe</h1>
+      <p>Uống nước · Vận động · Nghỉ ngơi</p>
+      <button class="btn-settings" id="btn-settings" title="Cài đặt">⚙️</button>
+    </header>
+
+    <!-- Uống nước -->
+    <div class="card" id="card-water">
+      <div class="card-header">
+        <div class="icon water">💧</div>
+        <div>
+          <div class="card-title">Uống nước</div>
+          <div class="card-sub">Nhắc uống nước đều đặn</div>
+        </div>
+      </div>
+      <div class="row">
+        <label>Mỗi (phút)</label>
+        <input type="number" id="interval-water" min="1" max="180" value="45" />
+      </div>
+      <div class="toggle-row">
+        <span style="font-size:0.88rem;color:var(--text-soft)">Bật nhắc</span>
+        <label class="switch">
+          <input type="checkbox" id="toggle-water" />
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div class="status" id="status-water">Chưa bật</div>
+    </div>
+
+    <!-- Vận động -->
+    <div class="card" id="card-exercise">
+      <div class="card-header">
+        <div class="icon exercise">🏃</div>
+        <div>
+          <div class="card-title">Vận động</div>
+          <div class="card-sub">Đứng dậy, đi lại, giãn cơ</div>
+        </div>
+      </div>
+      <div class="row">
+        <label>Mỗi (phút)</label>
+        <input type="number" id="interval-exercise" min="1" max="240" value="60" />
+      </div>
+      <div class="toggle-row">
+        <span style="font-size:0.88rem;color:var(--text-soft)">Bật nhắc</span>
+        <label class="switch">
+          <input type="checkbox" id="toggle-exercise" />
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div class="status" id="status-exercise">Chưa bật</div>
+    </div>
+
+    <!-- Nghỉ ngơi -->
+    <div class="card" id="card-rest">
+      <div class="card-header">
+        <div class="icon rest">🧘</div>
+        <div>
+          <div class="card-title">Nghỉ ngơi</div>
+          <div class="card-sub">Thư giãn mắt, thở sâu</div>
+        </div>
+      </div>
+      <div class="row">
+        <label>Mỗi (phút)</label>
+        <input type="number" id="interval-rest" min="1" max="300" value="90" />
+      </div>
+      <div class="toggle-row">
+        <span style="font-size:0.88rem;color:var(--text-soft)">Bật nhắc</span>
+        <label class="switch">
+          <input type="checkbox" id="toggle-rest" />
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div class="status" id="status-rest">Chưa bật</div>
+    </div>
+
+    <!-- Nhạc -->
+    <div class="card music-card">
+      <div class="card-header">
+        <div class="icon" style="background:#f3e8ff">🎵</div>
+        <div>
+          <div class="card-title">Nhạc thư giãn</div>
+          <div class="card-sub">Phát nhạc từ file trên máy</div>
+        </div>
+      </div>
+      <div class="music-controls">
+        <button class="btn-secondary btn-sm" id="btn-pick-music">📁 Chọn file</button>
+        <button class="btn-primary btn-sm" id="btn-play-pause" disabled>▶ Phát</button>
+      </div>
+      <div class="music-info" id="music-info" title="Chạm để xóa bài đã lưu">Chưa chọn bài hát</div>
+      <div class="progress-wrap">
+        <div class="progress-bar" id="progress-bar">
+          <div class="progress-fill" id="progress-fill"></div>
+        </div>
+        <div class="time-row">
+          <span id="time-current">0:00</span>
+          <span id="time-total">0:00</span>
+        </div>
+      </div>
+      <div class="row" style="margin-top:10px;margin-bottom:0">
+        <label>Lặp lại</label>
+        <label class="switch">
+          <input type="checkbox" id="toggle-loop" />
+          <span class="slider"></span>
+        </label>
+      </div>
+      <audio id="audio-player"></audio>
+      <input type="file" id="file-music" class="file-input-hidden" accept="audio/*,.mp3,.m4a,.wav,.ogg,.flac,.aac" />
+    </div>
+
+    <div class="global-actions btn-group">
+      <button class="btn-primary" id="btn-start-all">Bật tất cả</button>
+      <button class="btn-danger" id="btn-stop-all">Tắt tất cả</button>
+    </div>
+
+    <p class="permission-note">
+      Cho phép <strong>thông báo</strong> khi được hỏi.<br>
+      Nên <strong>cài vào màn hình chính</strong> và giữ app không bị tắt hẳn.<br>
+      Trên iPhone: Settings → Safari → Notifications (hoặc quyền app).
+    </p>
+    <footer>Ứng dụng đơn giản · PWA</footer>
+  </div>
+
+  <!-- Settings overlay -->
+  <div class="overlay" id="overlay"></div>
+  <div class="settings-panel" id="settings-panel">
+    <div class="settings-header">
+      <h2>⚙️ Cài đặt giao diện</h2>
+      <button class="btn-close" id="btn-close-settings">✕</button>
+    </div>
+
+    <div class="settings-section">
+      <h3>Chủ đề</h3>
+      <div class="theme-presets">
+        <div class="preset active" data-theme="default" style="background:linear-gradient(135deg,#e0f2fe,#0ea5e9)" title="Mặc định">
+          <span>Sáng</span>
+        </div>
+        <div class="preset" data-theme="dark" style="background:linear-gradient(135deg,#1e293b,#0f172a)" title="Tối">
+          <span>Tối</span>
+        </div>
+        <div class="preset" data-theme="green" style="background:linear-gradient(135deg,#dcfce7,#16a34a)" title="Xanh lá">
+          <span>Xanh</span>
+        </div>
+        <div class="preset" data-theme="purple" style="background:linear-gradient(135deg,#f3e8ff,#9333ea)" title="Tím">
+          <span>Tím</span>
+        </div>
+        <div class="preset" data-theme="orange" style="background:linear-gradient(135deg,#ffedd5,#ea580c)" title="Cam">
+          <span>Cam</span>
+        </div>
+        <div class="preset" data-theme="pink" style="background:linear-gradient(135deg,#fce7f3,#db2777)" title="Hồng">
+          <span>Hồng</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="settings-section">
+      <h3>Màu chính</h3>
+      <div class="color-row">
+        <label>Màu nút / nhấn</label>
+        <input type="color" id="color-primary" value="#0ea5e9" />
+      </div>
+    </div>
+
+    <div class="settings-section">
+      <h3>Hình nền</h3>
+      <div class="bg-actions">
+        <button class="btn-secondary btn-sm" id="btn-pick-bg">📷 Chọn ảnh</button>
+        <button class="btn-secondary btn-sm" id="btn-clear-bg">Xóa nền</button>
+      </div>
+      <input type="file" id="file-bg" class="file-input-hidden" accept="image/*" />
+      <div class="opacity-row" id="opacity-row" style="display:none">
+        <label style="font-size:0.85rem;color:var(--text-soft);white-space:nowrap">Độ mờ lớp phủ</label>
+        <input type="range" id="bg-opacity" min="20" max="90" value="55" />
+      </div>
+    </div>
+
+    <div class="settings-section">
+      <h3>Khác</h3>
+      <button class="btn-secondary" id="btn-reset-ui" style="width:100%">Khôi phục giao diện mặc định</button>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <!-- Banner nhắc trong app -->
+  <div class="alert-overlay" id="alert-overlay">
+    <div class="alert-box">
+      <div class="alert-emoji" id="alert-emoji">💧</div>
+      <div class="alert-title" id="alert-title">Nhắc nhở</div>
+      <div class="alert-msg" id="alert-msg">Đến giờ rồi!</div>
+      <button class="btn-primary" id="btn-alert-ok">Đã hiểu · Tắt chuông</button>
+      <button class="btn-secondary" id="btn-alert-snooze">Báo lại sau 5 phút</button>
+    </div>
+  </div>
+
+  <script>
+    // ========== Cấu hình nhắc ==========
+    const TYPES = {
+      water: {
+        name: "Uống nước",
+        emoji: "💧",
+        message: "Đến giờ uống nước rồi! Uống một ly nước nhé 💧",
+        defaultInterval: 45
+      },
+      exercise: {
+        name: "Vận động",
+        emoji: "🏃",
+        message: "Đứng dậy vận động một chút nào! Đi lại hoặc giãn cơ 🏃",
+        defaultInterval: 60
+      },
+      rest: {
+        name: "Nghỉ ngơi",
+        emoji: "🧘",
+        message: "Thư giãn mắt và thở sâu vài lần 🧘",
+        defaultInterval: 90
+      }
+    };
+
+    const timers = { water: null, exercise: null, rest: null };
+    const nextTimes = { water: null, exercise: null, rest: null };
+
+    // ========== Theme presets ==========
+    const THEMES = {
+      default: {
+        primary: "#0ea5e9",
+        primaryDark: "#0369a1",
+        bgStart: "#e0f2fe",
+        bgMid: "#f0f9ff",
+        bgEnd: "#f8fafc",
+        dark: false
+      },
+      dark: {
+        primary: "#38bdf8",
+        primaryDark: "#7dd3fc",
+        bgStart: "#0f172a",
+        bgMid: "#1e293b",
+        bgEnd: "#0f172a",
+        dark: true
+      },
+      green: {
+        primary: "#16a34a",
+        primaryDark: "#15803d",
+        bgStart: "#dcfce7",
+        bgMid: "#f0fdf4",
+        bgEnd: "#f8fafc",
+        dark: false
+      },
+      purple: {
+        primary: "#9333ea",
+        primaryDark: "#7e22ce",
+        bgStart: "#f3e8ff",
+        bgMid: "#faf5ff",
+        bgEnd: "#f8fafc",
+        dark: false
+      },
+      orange: {
+        primary: "#ea580c",
+        primaryDark: "#c2410c",
+        bgStart: "#ffedd5",
+        bgMid: "#fff7ed",
+        bgEnd: "#f8fafc",
+        dark: false
+      },
+      pink: {
+        primary: "#db2777",
+        primaryDark: "#be185d",
+        bgStart: "#fce7f3",
+        bgMid: "#fdf2f8",
+        bgEnd: "#f8fafc",
+        dark: false
+      }
+    };
+
+    // ========== Helpers ==========
+    function showToast(text) {
+      const t = document.getElementById("toast");
+      t.textContent = text;
+      t.classList.add("show");
+      setTimeout(() => t.classList.remove("show"), 2500);
+    }
+
+    function formatTime(date) {
+      if (!date) return "";
+      return date.toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" });
+    }
+
+    function formatAudioTime(sec) {
+      if (!sec || isNaN(sec)) return "0:00";
+      const m = Math.floor(sec / 60);
+      const s = Math.floor(sec % 60);
+      return m + ":" + (s < 10 ? "0" : "") + s;
+    }
+
+    // ========== Settings storage ==========
+    function saveSettings() {
+      const data = {};
+      for (const key of Object.keys(TYPES)) {
+        data[key] = {
+          interval: Number(document.getElementById(`interval-${key}`).value) || TYPES[key].defaultInterval,
+          enabled: document.getElementById(`toggle-${key}`).checked
+        };
+      }
+      localStorage.setItem("health-reminders", JSON.stringify(data));
+    }
+
+    function loadSettings() {
+      try {
+        const raw = localStorage.getItem("health-reminders");
+        if (!raw) return;
+        const data = JSON.parse(raw);
+        for (const key of Object.keys(TYPES)) {
+          if (data[key]) {
+            document.getElementById(`interval-${key}`).value = data[key].interval || TYPES[key].defaultInterval;
+            document.getElementById(`toggle-${key}`).checked = !!data[key].enabled;
+          }
+        }
+      } catch (e) {}
+    }
+
+    function saveUI() {
+      const ui = {
+        theme: document.body.dataset.theme || "default",
+        primary: document.getElementById("color-primary").value,
+        bgImage: localStorage.getItem("health-bg-image") || null,
+        bgOpacity: document.getElementById("bg-opacity").value
+      };
+      localStorage.setItem("health-ui", JSON.stringify({
+        theme: ui.theme,
+        primary: ui.primary,
+        bgOpacity: ui.bgOpacity
+      }));
+    }
+
+    function loadUI() {
+      try {
+        const raw = localStorage.getItem("health-ui");
+        if (raw) {
+          const ui = JSON.parse(raw);
+          if (ui.theme) applyTheme(ui.theme, false);
+          if (ui.primary) {
+            document.getElementById("color-primary").value = ui.primary;
+            document.documentElement.style.setProperty("--primary", ui.primary);
+          }
+          if (ui.bgOpacity) {
+            document.getElementById("bg-opacity").value = ui.bgOpacity;
+            updateOverlayOpacity(ui.bgOpacity);
+          }
+        }
+        const bg = localStorage.getItem("health-bg-image");
+        if (bg) {
+          applyBgImage(bg);
+        }
+      } catch (e) {}
+    }
+
+    // ========== Theme ==========
+    function applyTheme(name, save = true) {
+      const t = THEMES[name] || THEMES.default;
+      document.body.dataset.theme = name;
+      document.body.classList.toggle("dark", !!t.dark);
+      document.documentElement.style.setProperty("--primary", t.primary);
+      document.documentElement.style.setProperty("--primary-dark", t.primaryDark);
+      document.documentElement.style.setProperty("--bg-start", t.bgStart);
+      document.documentElement.style.setProperty("--bg-mid", t.bgMid);
+      document.documentElement.style.setProperty("--bg-end", t.bgEnd);
+      document.getElementById("color-primary").value = t.primary;
+      document.querySelectorAll(".preset").forEach(el => {
+        el.classList.toggle("active", el.dataset.theme === name);
+      });
+      if (save) saveUI();
+    }
+
+    function applyBgImage(dataUrl) {
+      document.body.style.setProperty("--bg-image", `url(${dataUrl})`);
+      document.body.classList.add("has-bg-image");
+      document.getElementById("opacity-row").style.display = "flex";
+      localStorage.setItem("health-bg-image", dataUrl);
+    }
+
+    function clearBgImage() {
+      document.body.style.removeProperty("--bg-image");
+      document.body.classList.remove("has-bg-image");
+      document.getElementById("opacity-row").style.display = "none";
+      localStorage.removeItem("health-bg-image");
+      saveUI();
+    }
+
+    function updateOverlayOpacity(val) {
+      const opacity = Number(val) / 100;
+      const isDark = document.body.classList.contains("dark");
+      const color = isDark ? `rgba(15, 23, 42, ${opacity})` : `rgba(255, 255, 255, ${opacity})`;
+      // Update via style on pseudo is hard; use a CSS variable
+      document.documentElement.style.setProperty("--overlay-opacity", opacity);
+      // Force update by setting a style rule
+      let style = document.getElementById("dynamic-overlay");
+      if (!style) {
+        style = document.createElement("style");
+        style.id = "dynamic-overlay";
+        document.head.appendChild(style);
+      }
+      style.textContent = `
+        body.has-bg-image::before { background: ${isDark ? `rgba(15,23,42,${opacity})` : `rgba(255,255,255,${opacity})`}; }
+      `;
+    }
+
+    // ========== Notification ==========
+    async function requestPermission() {
+      if (!("Notification" in window)) {
+        showToast("Trình duyệt không hỗ trợ thông báo");
+        return false;
+      }
+      if (Notification.permission === "granted") return true;
+      if (Notification.permission === "denied") {
+        showToast("Bạn đã từ chối thông báo. Hãy bật lại trong cài đặt trình duyệt.");
+        return false;
+      }
+      const result = await Notification.requestPermission();
+      return result === "granted";
+    }
+
+    // ===== Chuông reo liên tục =====
+    let alarmCtx = null;
+    let alarmOsc = null;
+    let alarmGain = null;
+    let alarmInterval = null;
+    let alarmVibrateInterval = null;
+    let currentAlertType = null;
+
+    function startAlarmSound() {
+      stopAlarmSound();
+      try {
+        alarmCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (alarmCtx.state === "suspended") alarmCtx.resume();
+
+        const beep = () => {
+          if (!alarmCtx) return;
+          try {
+            const osc = alarmCtx.createOscillator();
+            const gain = alarmCtx.createGain();
+            osc.type = "square";
+            osc.frequency.value = 880;
+            gain.gain.value = 0.2;
+            osc.connect(gain);
+            gain.connect(alarmCtx.destination);
+            osc.start();
+            gain.gain.setValueAtTime(0.2, alarmCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, alarmCtx.currentTime + 0.35);
+            osc.stop(alarmCtx.currentTime + 0.35);
+          } catch (e) {}
+        };
+
+        // Reo ngay + lặp mỗi 0.7s
+        beep();
+        alarmInterval = setInterval(beep, 700);
+
+        // Rung liên tục
+        if (navigator.vibrate) {
+          navigator.vibrate([300, 200, 300, 200, 300]);
+          alarmVibrateInterval = setInterval(() => {
+            navigator.vibrate([300, 200, 300, 200, 300]);
+          }, 1500);
+        }
+      } catch (e) {
+        console.log("Alarm sound failed", e);
+      }
+    }
+
+    function stopAlarmSound() {
+      if (alarmInterval) {
+        clearInterval(alarmInterval);
+        alarmInterval = null;
+      }
+      if (alarmVibrateInterval) {
+        clearInterval(alarmVibrateInterval);
+        alarmVibrateInterval = null;
+      }
+      if (navigator.vibrate) navigator.vibrate(0);
+      if (alarmCtx) {
+        try { alarmCtx.close(); } catch (e) {}
+        alarmCtx = null;
+      }
+      alarmOsc = null;
+      alarmGain = null;
+    }
+
+    function showInAppAlert(type) {
+      const conf = TYPES[type];
+      currentAlertType = type;
+      document.getElementById("alert-emoji").textContent = conf.emoji;
+      document.getElementById("alert-title").textContent = conf.name;
+      document.getElementById("alert-msg").textContent = conf.message;
+      document.getElementById("alert-overlay").classList.add("show");
+      startAlarmSound();
+    }
+
+    function hideInAppAlert() {
+      document.getElementById("alert-overlay").classList.remove("show");
+      stopAlarmSound();
+      currentAlertType = null;
+    }
+
+    async function sendNotification(type) {
+      const conf = TYPES[type];
+      const title = `${conf.emoji} ${conf.name}`;
+      const body = conf.message;
+
+      // 1) Banner trong app + chuông (luôn hiện)
+      showInAppAlert(type);
+
+      // 2) Thông báo hệ thống (nếu được phép)
+      try {
+        const reg = await navigator.serviceWorker.getRegistration();
+        if (reg && Notification.permission === "granted") {
+          if (reg.active) {
+            reg.active.postMessage({
+              type: "SHOW_NOTIFICATION",
+              title,
+              body,
+              icon: "/icon-192.png",
+              tag: type
+            });
+          } else {
+            await reg.showNotification(title, {
+              body,
+              icon: "/icon-192.png",
+              badge: "/icon-192.png",
+              tag: type,
+              renotify: true,
+              requireInteraction: true,
+              vibrate: [200, 100, 200]
+            });
+          }
+        } else if (Notification.permission === "granted") {
+          new Notification(title, {
+            body,
+            icon: "/icon-192.png",
+            tag: type,
+            requireInteraction: true
+          });
+        }
+      } catch (e) {}
+    }
+
+    // ========== Timer (ổn định hơn khi nền) ==========
+    function persistNextTimes() {
+      const data = {};
+      for (const key of Object.keys(TYPES)) {
+        data[key] = nextTimes[key] ? nextTimes[key].getTime() : null;
+      }
+      localStorage.setItem("health-next-times", JSON.stringify(data));
+    }
+
+    function loadNextTimes() {
+      try {
+        const raw = localStorage.getItem("health-next-times");
+        if (!raw) return;
+        const data = JSON.parse(raw);
+        for (const key of Object.keys(TYPES)) {
+          if (data[key]) nextTimes[key] = new Date(data[key]);
+        }
+      } catch (e) {}
+    }
+
+    function updateStatus(type) {
+      const el = document.getElementById(`status-${type}`);
+      const enabled = document.getElementById(`toggle-${type}`).checked;
+      if (enabled && nextTimes[type]) {
+        const t = nextTimes[type].getTime();
+        const left = Math.max(0, t - Date.now());
+        const mins = Math.floor(left / 60000);
+        const secs = Math.floor((left % 60000) / 1000);
+        el.textContent = `Lần nhắc tiếp theo: ${formatTime(nextTimes[type])} (còn ${mins}:${secs < 10 ? "0" : ""}${secs})`;
+        el.classList.add("active");
+      } else {
+        el.textContent = enabled ? "Đang chuẩn bị..." : "Chưa bật";
+        el.classList.remove("active");
+      }
+    }
+
+    function getIntervalMs(type) {
+      const intervalMin = Number(document.getElementById(`interval-${type}`).value) || TYPES[type].defaultInterval;
+      return Math.max(1, intervalMin) * 60 * 1000;
+    }
+
+    function armTimeout(type) {
+      if (timers[type]) {
+        clearTimeout(timers[type]);
+        timers[type] = null;
+      }
+      if (!nextTimes[type]) return;
+      const delay = Math.max(0, nextTimes[type].getTime() - Date.now());
+      timers[type] = setTimeout(async () => {
+        if (!document.getElementById(`toggle-${type}`).checked) return;
+        await sendNotification(type);
+        // Lên lịch lần tiếp
+        nextTimes[type] = new Date(Date.now() + getIntervalMs(type));
+        persistNextTimes();
+        updateStatus(type);
+        armTimeout(type);
+      }, delay);
+    }
+
+    function startTimer(type) {
+      stopTimer(type, false);
+      nextTimes[type] = new Date(Date.now() + getIntervalMs(type));
+      persistNextTimes();
+      updateStatus(type);
+      armTimeout(type);
+      saveSettings();
+    }
+
+    function stopTimer(type, clearNext = true) {
+      if (timers[type]) {
+        clearTimeout(timers[type]);
+        timers[type] = null;
+      }
+      if (clearNext) {
+        nextTimes[type] = null;
+        persistNextTimes();
+      }
+      updateStatus(type);
+      saveSettings();
+    }
+
+    // Khi quay lại app: kiểm tra nhắc đã đến hạn (vì timer nền bị trình duyệt tạm dừng)
+    async function checkOverdueReminders() {
+      const now = Date.now();
+      for (const type of Object.keys(TYPES)) {
+        if (!document.getElementById(`toggle-${type}`).checked) continue;
+        if (!nextTimes[type]) {
+          startTimer(type);
+          continue;
+        }
+        if (nextTimes[type].getTime() <= now) {
+          await sendNotification(type);
+          nextTimes[type] = new Date(now + getIntervalMs(type));
+          persistNextTimes();
+          updateStatus(type);
+          armTimeout(type);
+        } else {
+          armTimeout(type);
+          updateStatus(type);
+        }
+      }
+    }
+
+    function onToggle(type) {
+      const checked = document.getElementById(`toggle-${type}`).checked;
+      if (checked) {
+        requestPermission().then(ok => {
+          if (ok || Notification.permission === "granted") {
+            startTimer(type);
+            showToast(`Đã bật nhắc ${TYPES[type].name}`);
+          } else {
+            // Vẫn cho bật nhắc trong app (toast + rung), dù không có notification hệ thống
+            startTimer(type);
+            showToast(`Đã bật nhắc (chưa có quyền thông báo hệ thống)`);
+          }
+        });
+      } else {
+        stopTimer(type);
+        showToast(`Đã tắt nhắc ${TYPES[type].name}`);
+      }
+    }
+
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "visible") checkOverdueReminders();
+    });
+    window.addEventListener("focus", () => checkOverdueReminders());
+
+    // ========== Music player + IndexedDB history ==========
+    const audio = document.getElementById("audio-player");
+    const btnPlayPause = document.getElementById("btn-play-pause");
+    let musicObjectUrl = null;
+    const MUSIC_DB = "health-music-db";
+    const MUSIC_STORE = "tracks";
+
+    function openMusicDB() {
+      return new Promise((resolve, reject) => {
+        const req = indexedDB.open(MUSIC_DB, 1);
+        req.onupgradeneeded = () => {
+          const db = req.result;
+          if (!db.objectStoreNames.contains(MUSIC_STORE)) {
+            db.createObjectStore(MUSIC_STORE, { keyPath: "id" });
+          }
+        };
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => reject(req.error);
+      });
+    }
+
+    async function saveTrackToDB(file) {
+      const db = await openMusicDB();
+      const buffer = await file.arrayBuffer();
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(MUSIC_STORE, "readwrite");
+        tx.objectStore(MUSIC_STORE).put({
+          id: "last",
+          name: file.name,
+          type: file.type || "audio/mpeg",
+          size: file.size,
+          data: buffer,
+          savedAt: Date.now()
+        });
+        tx.oncomplete = () => resolve();
+        tx.onerror = () => reject(tx.error);
+      });
+    }
+
+    async function loadTrackFromDB() {
+      const db = await openMusicDB();
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(MUSIC_STORE, "readonly");
+        const req = tx.objectStore(MUSIC_STORE).get("last");
+        req.onsuccess = () => resolve(req.result || null);
+        req.onerror = () => reject(req.error);
+      });
+    }
+
+    async function clearTrackFromDB() {
+      const db = await openMusicDB();
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(MUSIC_STORE, "readwrite");
+        tx.objectStore(MUSIC_STORE).delete("last");
+        tx.oncomplete = () => resolve();
+        tx.onerror = () => reject(tx.error);
+      });
+    }
+
+    function applyTrackBlob(blob, name) {
+      if (musicObjectUrl) URL.revokeObjectURL(musicObjectUrl);
+      musicObjectUrl = URL.createObjectURL(blob);
+      audio.src = musicObjectUrl;
+      audio.load();
+      document.getElementById("music-info").innerHTML =
+        `<strong>${name}</strong><br><span style="font-size:0.75rem;color:var(--text-muted)">Đã lưu · sẵn sàng khi mở lại app</span>`;
+      document.getElementById("progress-fill").style.width = "0%";
+      document.getElementById("time-current").textContent = "0:00";
+      document.getElementById("time-total").textContent = "0:00";
+      setMusicUI("idle");
+    }
+
+    function setMusicUI(state) {
+      // state: "idle" | "playing" | "paused"
+      const hasTrack = !!audio.src;
+      btnPlayPause.disabled = !hasTrack;
+
+      if (!hasTrack) {
+        btnPlayPause.textContent = "▶ Phát";
+        btnPlayPause.classList.add("btn-primary");
+        btnPlayPause.classList.remove("btn-playing");
+        return;
+      }
+
+      if (state === "playing") {
+        btnPlayPause.textContent = "⏸ Tạm dừng";
+        btnPlayPause.classList.remove("btn-primary");
+        btnPlayPause.classList.add("btn-playing");
+      } else {
+        // idle hoặc paused → Phát (tiếp tục từ vị trí hiện tại)
+        btnPlayPause.textContent = "▶ Phát";
+        btnPlayPause.classList.add("btn-primary");
+        btnPlayPause.classList.remove("btn-playing");
+      }
+    }
+
+    document.getElementById("btn-pick-music").addEventListener("click", () => {
+      document.getElementById("file-music").click();
+    });
+
+    document.getElementById("file-music").addEventListener("change", async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      try {
+        applyTrackBlob(file, file.name);
+        await saveTrackToDB(file);
+        showToast("Đã tải và lưu bài hát");
+      } catch (err) {
+        console.error(err);
+        showToast("Lưu bài hát thất bại (file quá lớn?)");
+      }
+      e.target.value = "";
+    });
+
+    btnPlayPause.addEventListener("click", () => {
+      if (!audio.src) return;
+      if (audio.paused) {
+        audio.play().then(() => setMusicUI("playing"))
+          .catch(() => showToast("Không phát được file này"));
+      } else {
+        audio.pause();
+        setMusicUI("paused");
+      }
+    });
+
+    // Long-press stop or double-click stop to clear saved track — add clear button via info
+    document.getElementById("music-info").addEventListener("click", async () => {
+      if (!audio.src) return;
+      if (!confirm("Xóa bài hát đã lưu?")) return;
+      audio.pause();
+      audio.removeAttribute("src");
+      audio.load();
+      if (musicObjectUrl) {
+        URL.revokeObjectURL(musicObjectUrl);
+        musicObjectUrl = null;
+      }
+      document.getElementById("music-info").textContent = "Chưa chọn bài hát";
+      document.getElementById("progress-fill").style.width = "0%";
+      document.getElementById("time-current").textContent = "0:00";
+      document.getElementById("time-total").textContent = "0:00";
+      setMusicUI("idle");
+      try { await clearTrackFromDB(); } catch (e) {}
+      showToast("Đã xóa bài đã lưu");
+    });
+
+    document.getElementById("toggle-loop").addEventListener("change", (e) => {
+      audio.loop = e.target.checked;
+      localStorage.setItem("music-loop", e.target.checked ? "1" : "0");
+    });
+
+    // restore loop preference
+    if (localStorage.getItem("music-loop") === "1") {
+      document.getElementById("toggle-loop").checked = true;
+      audio.loop = true;
+    }
+
+    audio.addEventListener("play", () => setMusicUI("playing"));
+    audio.addEventListener("pause", () => {
+      if (audio.ended || audio.currentTime === 0) setMusicUI("idle");
+      else setMusicUI("paused");
+    });
+
+    audio.addEventListener("timeupdate", () => {
+      if (!audio.duration) return;
+      const pct = (audio.currentTime / audio.duration) * 100;
+      document.getElementById("progress-fill").style.width = pct + "%";
+      document.getElementById("time-current").textContent = formatAudioTime(audio.currentTime);
+      document.getElementById("time-total").textContent = formatAudioTime(audio.duration);
+    });
+
+    audio.addEventListener("loadedmetadata", () => {
+      document.getElementById("time-total").textContent = formatAudioTime(audio.duration);
+    });
+
+    audio.addEventListener("ended", () => {
+      if (!audio.loop) {
+        document.getElementById("progress-fill").style.width = "0%";
+        document.getElementById("time-current").textContent = "0:00";
+        setMusicUI("idle");
+      }
+    });
+
+    document.getElementById("progress-bar").addEventListener("click", (e) => {
+      if (!audio.duration) return;
+      const rect = e.currentTarget.getBoundingClientRect();
+      const pct = (e.clientX - rect.left) / rect.width;
+      audio.currentTime = pct * audio.duration;
+    });
+
+    // Restore last track on startup
+    (async function restoreMusic() {
+      try {
+        const saved = await loadTrackFromDB();
+        if (!saved || !saved.data) return;
+        const blob = new Blob([saved.data], { type: saved.type || "audio/mpeg" });
+        applyTrackBlob(blob, saved.name || "Bài đã lưu");
+      } catch (err) {
+        console.log("No saved music or restore failed", err);
+      }
+    })();
+
+    // ========== Settings UI ==========
+    const overlay = document.getElementById("overlay");
+    const panel = document.getElementById("settings-panel");
+
+    function openSettings() {
+      overlay.classList.add("open");
+      panel.classList.add("open");
+    }
+    function closeSettings() {
+      overlay.classList.remove("open");
+      panel.classList.remove("open");
+    }
+
+    document.getElementById("btn-settings").addEventListener("click", openSettings);
+    document.getElementById("btn-close-settings").addEventListener("click", closeSettings);
+    overlay.addEventListener("click", closeSettings);
+
+    document.querySelectorAll(".preset").forEach(el => {
+      el.addEventListener("click", () => applyTheme(el.dataset.theme));
+    });
+
+    document.getElementById("color-primary").addEventListener("input", (e) => {
+      document.documentElement.style.setProperty("--primary", e.target.value);
+      saveUI();
+    });
+
+    document.getElementById("btn-pick-bg").addEventListener("click", () => {
+      document.getElementById("file-bg").click();
+    });
+
+    document.getElementById("file-bg").addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        applyBgImage(ev.target.result);
+        updateOverlayOpacity(document.getElementById("bg-opacity").value);
+        saveUI();
+        showToast("Đã đổi hình nền");
+      };
+      reader.readAsDataURL(file);
+    });
+
+    document.getElementById("btn-clear-bg").addEventListener("click", () => {
+      clearBgImage();
+      showToast("Đã xóa hình nền");
+    });
+
+    document.getElementById("bg-opacity").addEventListener("input", (e) => {
+      updateOverlayOpacity(e.target.value);
+      saveUI();
+    });
+
+    document.getElementById("btn-reset-ui").addEventListener("click", () => {
+      applyTheme("default");
+      clearBgImage();
+      document.getElementById("color-primary").value = "#0ea5e9";
+      document.documentElement.style.setProperty("--primary", "#0ea5e9");
+      localStorage.removeItem("health-ui");
+      localStorage.removeItem("health-bg-image");
+      showToast("Đã khôi phục mặc định");
+    });
+
+    // ========== Main events ==========
+    document.addEventListener("DOMContentLoaded", () => {
+      loadSettings();
+      loadUI();
+      loadNextTimes();
+
+      for (const type of Object.keys(TYPES)) {
+        document.getElementById(`toggle-${type}`).addEventListener("change", () => onToggle(type));
+        document.getElementById(`interval-${type}`).addEventListener("change", () => {
+          if (document.getElementById(`toggle-${type}`).checked) startTimer(type);
+          saveSettings();
+        });
+      }
+
+      // Khôi phục timer / kiểm tra nhắc quá hạn
+      checkOverdueReminders();
+
+      // Mở khóa âm thanh (mobile cần tương tác trước)
+      const unlockAudio = () => {
+        try {
+          const c = new (window.AudioContext || window.webkitAudioContext)();
+          const b = c.createBuffer(1, 1, 22050);
+          const s = c.createBufferSource();
+          s.buffer = b;
+          s.connect(c.destination);
+          s.start(0);
+          c.resume();
+          setTimeout(() => c.close(), 300);
+        } catch (e) {}
+        document.removeEventListener("touchstart", unlockAudio);
+        document.removeEventListener("click", unlockAudio);
+      };
+      document.addEventListener("touchstart", unlockAudio, { once: true });
+      document.addEventListener("click", unlockAudio, { once: true });
+
+      document.getElementById("btn-start-all").addEventListener("click", async () => {
+        await requestPermission();
+        for (const type of Object.keys(TYPES)) {
+          document.getElementById(`toggle-${type}`).checked = true;
+          startTimer(type);
+        }
+        showToast("Đã bật tất cả nhắc nhở");
+      });
+
+      document.getElementById("btn-stop-all").addEventListener("click", () => {
+        for (const type of Object.keys(TYPES)) {
+          document.getElementById(`toggle-${type}`).checked = false;
+          stopTimer(type);
+        }
+        showToast("Đã tắt tất cả");
+      });
+
+      // Banner nhắc: tắt chuông
+      document.getElementById("btn-alert-ok").addEventListener("click", () => {
+        hideInAppAlert();
+      });
+
+      // Báo lại sau 5 phút
+      document.getElementById("btn-alert-snooze").addEventListener("click", () => {
+        const type = currentAlertType;
+        hideInAppAlert();
+        if (type && document.getElementById(`toggle-${type}`).checked) {
+          nextTimes[type] = new Date(Date.now() + 5 * 60 * 1000);
+          persistNextTimes();
+          updateStatus(type);
+          armTimeout(type);
+          showToast(`Báo lại ${TYPES[type].name} sau 5 phút`);
+        }
+      });
+    });
+
+    // Cập nhật đồng hồ đếm mỗi giây khi app đang mở
+    setInterval(() => {
+      for (const type of Object.keys(TYPES)) updateStatus(type);
+    }, 1000);
+
+    // Heartbeat: kiểm tra hạn nhắc mỗi 15s (khi tab còn sống)
+    setInterval(() => {
+      if (document.visibilityState === "visible") checkOverdueReminders();
+    }, 15000);
+
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("/sw.js", { scope: "/" }).then((reg) => {
+          // Ép SW mới kích hoạt
+          if (reg.waiting) reg.waiting.postMessage({ type: "SKIP_WAITING" });
+        }).catch(() => {});
+      });
+    }
+  </script>
+</body>
+</html>
